@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <unistd.h>
+#include <ctime>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -27,7 +28,7 @@ typedef enum { SHADED, WIREFRAME, POINTS } displayModes;
 displayModes mode = SHADED;
 bool showBounds = false;
 
-int main() {
+int main() { 
 	if (!CreateWindow(window)) return -1;
 	srand(time(NULL));
 	//setSDF();
@@ -103,16 +104,5 @@ bool CreateWindow(GLFWwindow* window) {
 
 
 std::string UpdateVersion() {
-	int v;
-	char cwd[1024];
-	readlink("/proc/self/exe", cwd, 1024);
-	std::string scwd = std::string(cwd);
-	std::string path = scwd.substr(0, scwd.rfind("/")) + "/../VERSION";
-	std::fstream myfile(path, std::ios::in | std::ios::out);
-	myfile >> v;
-	myfile.clear();
-	myfile.seekp(0,std::ios::beg);
-	myfile << ++v;
-	myfile.close();
-	return std::to_string(v);
+	return "0.0.No";
 }
