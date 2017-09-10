@@ -16,6 +16,7 @@ using namespace glm;
 
 GLuint programID;
 GLuint vertexbuffer;
+GLuint normalbuffer;
 GLuint elementbuffer;
 
 GLuint ProjID;
@@ -25,6 +26,7 @@ GLuint ViewID;
 glm::mat4 Projection;
 glm::mat4 View;
 glm::mat4 Model;
+std::vector<unsigned short> indices;
 RenderSystem::RenderSystem() {
   std::cerr << "New System :: Render!" << std::endl;
 	setComponent<Player>();
@@ -38,8 +40,7 @@ RenderSystem::RenderSystem() {
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
   glDepthFunc(GL_LESS); 
-  
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glEnable(GL_CULL_FACE);
 
   GLuint VertexArrayID;
   glGenVertexArrays(1, &VertexArrayID);
@@ -55,28 +56,98 @@ RenderSystem::RenderSystem() {
   // Our ModelViewProjection : multiplication of our 3 matrices
   
   static const GLfloat g_vertex_buffer_data[] = {
+    //FRONT FACE
     -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
     -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f,  1.0f,
-     0.0f, 0.0f, 0.0f,
-     1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
      1.0f,  1.0f, -1.0f,
+    
+     //BACK FACE
+     1.0f, -1.0f, 1.0f,
+     1.0f,  1.0f, 1.0f,
+    -1.0f, -1.0f, 1.0f,
+    -1.0f,  1.0f, 1.0f,
+
+     //LEFT FACE
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    
+    //RIGHT FACE
+    1.0f, -1.0f,  1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f,  1.0f,  1.0f,
+    1.0f,  1.0f, -1.0f,
+    
+    //TOP FACE
      1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    //BOTTOM FACE
+    -1.0f,  -1.0f,  1.0f,
+    -1.0f,  -1.0f, -1.0f,
+     1.0f,  -1.0f,  1.0f,
+     1.0f,  -1.0f, -1.0f,
   };
-  std::vector<unsigned short> indices;
-  indices.push_back(0);
-  indices.push_back(1);
-  indices.push_back(2);
-  indices.push_back(2);
-  indices.push_back(3);
-  indices.push_back(1);
-  indices.push_back(0);
-  indices.push_back(2);
-  indices.push_back(4);
+  
+  static const GLfloat g_normal_buffer_data[] = {
+    //Front
+     0.0f,  0.0f, -1.0f,
+     0.0f,  0.0f, -1.0f,
+     0.0f,  0.0f, -1.0f,
+     0.0f,  0.0f, -1.0f,
+    
+    //Back
+     0.0f,  0.0f,  1.0f,
+     0.0f,  0.0f,  1.0f,
+     0.0f,  0.0f,  1.0f,
+     0.0f,  0.0f,  1.0f,
+    
+    //Left
+    -1.0f,  0.0f,  0.0f,
+    -1.0f,  0.0f,  0.0f,
+    -1.0f,  0.0f,  0.0f,
+    -1.0f,  0.0f,  0.0f,
+
+    //Right
+     1.0f,  0.0f,  0.0f,
+     1.0f,  0.0f,  0.0f,
+     1.0f,  0.0f,  0.0f,
+     1.0f,  0.0f,  0.0f,
+
+    //TOP
+     0.0f,  1.0f,  0.0f,
+     0.0f,  1.0f,  0.0f,
+     0.0f,  1.0f,  0.0f,
+     0.0f,  1.0f,  0.0f,
+
+    //Bottom
+     0.0f, -1.0f,  0.0f,
+     0.0f, -1.0f,  0.0f,
+     0.0f, -1.0f,  0.0f,
+     0.0f, -1.0f,  0.0f,
+  };
+
+  for(unsigned int i; i < (sizeof(g_vertex_buffer_data)/sizeof(*g_vertex_buffer_data)) / 3; i++)
+  {
+    indices.push_back((i * 4));
+    indices.push_back((i * 4) + 1);
+    indices.push_back((i * 4) + 2);
+    indices.push_back((i * 4) + 1);
+    indices.push_back((i * 4) + 3);
+    indices.push_back((i * 4) + 2);
+  }
+  
   glGenBuffers(1, &vertexbuffer);
   glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+  glGenBuffers(1, &normalbuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(g_normal_buffer_data), g_normal_buffer_data, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &elementbuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
@@ -126,16 +197,28 @@ void RenderSystem::update() {
     (void*)0            // array buffer offset
   );
 
+  glEnableVertexAttribArray(1);
+  glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+  glVertexAttribPointer(
+    1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+    3,                  // size
+    GL_FLOAT,           // type
+    GL_FALSE,           // normalized?
+    0,                  // stride
+    (void*)0            // array buffer offset
+  );
+
   // Draw the triangle !
   glDrawElements(GL_TRIANGLES,
-    9,    // count
+    indices.size(),    // count
     GL_UNSIGNED_SHORT,   // type
     (void*)0           // element array buffer offset
   );
 
 
   glDisableVertexAttribArray(0);
-
+  glDisableVertexAttribArray(1);
+  
   // Swap buffers
   glfwSwapBuffers(window);
   glfwPollEvents();

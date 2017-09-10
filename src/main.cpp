@@ -47,19 +47,6 @@ int main() {
 	tmp.position = vec3(4, 3, -3);
 	vec3 desiredDir = -tmp.position;
 	vec3 desiredUp = vec3(0.0f, 1.0f, 0.0f); // +Y
-
-	// ROTATION AXIS IS WRONG
-	// IF WE CAN CALCUATE THE RIGHT AXIS WE WIN
-	// quat rotZ = glm::angleAxis(float(atan2(-1.f, 1.f)) - 1.57f, vec3(0.f, 0.f, 1.f));
-	// quat rotY = glm::angleAxis((float)atan(4.f/3.f), vec3(0.f, 1.f, 0.f));
-	// vec3 rotationAxis = vec3(1, 0, 0) * rotZ;
-	// quat rotX = glm::angleAxis((float)atan(1.f/-3.f), rotationAxis);
-	// tmp.orientation = rotX * rotZ;
-
-	// quat QuatAroundX = normalize(quat(vec3(atan(1.f / -3.f), 0.0, 0.0)));
-	// quat QuatAroundY = normalize(quat(vec3(0.0, atan(1.f / 3.f), 0.0)));
-	// Quaternion QuatAroundY = Quaternion( Vector3(0.0,1.0,0.0), EulerAngle.y );
-	// Quaternion QuatAroundZ = Quaternion( Vector3(0.0,0.0,1.0), EulerAngle.z );
 	mat4 View       = glm::lookAt(
 		-tmp.position, // Camera is at (4,3,-3), in World Space
 		glm::vec3(0,0,0), // and looks at the origin
