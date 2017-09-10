@@ -6,6 +6,7 @@
 #include <vector>
 #include <typeinfo>
 #include <cxxabi.h>
+#include <iostream>
 //TODO: DOCUMENT THIS.
 
 class Engine {
@@ -27,7 +28,7 @@ class Engine {
 				}
 			}
 			int status;
-			// std::cout << "Could not find component " << abi::__cxa_demangle(typeid(tmp).name(),0,0,&status) << std::endl;
+			std::cout << "Could not find component " << abi::__cxa_demangle(typeid(tmp).name(),0,0,&status) << std::endl;
 			return nullptr;
 		};
 	private:
