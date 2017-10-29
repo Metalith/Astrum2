@@ -23,6 +23,7 @@ using namespace glm;
 #include "engine.hpp"
 #include "systems/render.hpp"
 #include "systems/controls.hpp"
+#include "systems/terrain.hpp"
 
 #include "components/player.hpp"
 #include "components/transform.hpp"
@@ -55,6 +56,7 @@ int main() {
 	tmp.orientation = toQuat(View);
 
 	e.addComponent(player, &tmp);
+	e.addSystem(new TerrainSystem());
 	e.addSystem(new ControlSystem());
 	e.addSystem(new RenderSystem());
 	window = glfwGetCurrentContext();

@@ -20,7 +20,7 @@ class Engine {
 		void deleteEntity();
 
 		template<class T>
-    T* getComponent(int e) {
+    	T* getComponent(int e) {
 			T* tmp;
 			for (auto* c : entities[e]) {
 				if ((tmp = dynamic_cast<T*>(c)) != nullptr) {

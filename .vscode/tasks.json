@@ -14,6 +14,14 @@
             "options": {
                 "cwd": "${workspaceRoot}/bin"
             }
+        },
+        {
+            "taskName": "Regenerate CMake",
+            "type": "shell",
+            "command": "cmake ..",
+            "options": {
+                "cwd": "${workspaceRoot}/bin"
+            }
         }
     ]
 }

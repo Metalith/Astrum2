@@ -13,6 +13,13 @@ class RenderSystem: public System {
 	private:
 		GLFWwindow* window;
 		Transform* tPlayer;
+		
+		std::vector<GLuint> vertexArrays;
+		std::vector<int> sizes;
+		std::vector<int> bSizes;
+		std::vector<int> vSizes;
+
+		int totalVerts = 0;
 };
 
 #endif
