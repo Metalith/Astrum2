@@ -10,9 +10,12 @@ using namespace glm;
 #include <iostream>
 #include <vector>
 
+#include <noise/noise.h>
+using namespace noise;
+
 Mesh mesh = Mesh();
 
-const int CHUNK_SIZE = 16;
+const int CHUNK_SIZE = 128;
 TerrainSystem::TerrainSystem() {
     std::cout << "New System :: Terrain!" << std::endl;
 
@@ -20,20 +23,16 @@ TerrainSystem::TerrainSystem() {
     /*
     For each cube in chunk
     Generate each face with offset
-    foreach face in vorder
-        foreach vertexindex in face
-            vertex[i] + offset[n]
-            normallist += normal(n)
-            indices += iOrder + i
     */
-    
+    module::Perlin myModule;
     int chunk = engine->createEntity();
 	engine->addComponent(chunk, &mesh);
     
     int i, j, k;
     for (i = 0; i < CHUNK_SIZE; i++) {
-        for (j = 0; j < CHUNK_SIZE; j++) {
-            for (k = 0; k < CHUNK_SIZE; k++) {
+        for (k = 0; k < CHUNK_SIZE; k++) {
+            int value = (myModule.GetValue(((double) i) / CHUNK_SIZE, 0.0, ((double) k) /  CHUNK_SIZE) + 1) * 8.0;
+            for (j = 0; j < value; j++) {
                GenerateCube(i, j, k, &mesh);
             }   
         }   
@@ -46,40 +45,40 @@ void TerrainSystem::update() {
 
 static const std::vector<GLfloat> g_vertex_buffer_data = {
     //FRONT FACE
-    -0.3f, -0.3f, -0.3f,
-    -0.3f,  0.3f, -0.3f,
-     0.3f, -0.3f, -0.3f,
-     0.3f,  0.3f, -0.3f,
+    -0.5f, -0.5f, -0.5f,
+    -0.5f,  0.5f, -0.5f,
+     0.5f, -0.5f, -0.5f,
+     0.5f,  0.5f, -0.5f,
     
      //BACK FACE
-     0.3f, -0.3f, 0.3f,
-     0.3f,  0.3f, 0.3f,
-    -0.3f, -0.3f, 0.3f,
-    -0.3f,  0.3f, 0.3f,
+     0.5f, -0.5f, 0.5f,
+     0.5f,  0.5f, 0.5f,
+    -0.5f, -0.5f, 0.5f,
+    -0.5f,  0.5f, 0.5f,
 
      //LEFT FACE
-    -0.3f,  0.3f,  0.3f,
-    -0.3f,  0.3f, -0.3f,
-    -0.3f, -0.3f,  0.3f,
-    -0.3f, -0.3f, -0.3f,
+    -0.5f,  0.5f,  0.5f,
+    -0.5f,  0.5f, -0.5f,
+    -0.5f, -0.5f,  0.5f,
+    -0.5f, -0.5f, -0.5f,
     
     //RIGHT FACE
-    0.3f, -0.3f,  0.3f,
-    0.3f, -0.3f, -0.3f,
-    0.3f,  0.3f,  0.3f,
-    0.3f,  0.3f, -0.3f,
+    0.5f, -0.5f,  0.5f,
+    0.5f, -0.5f, -0.5f,
+    0.5f,  0.5f,  0.5f,
+    0.5f,  0.5f, -0.5f,
     
     //TOP FACE
-     0.3f,  0.3f,  0.3f,
-     0.3f,  0.3f, -0.3f,
-    -0.3f,  0.3f,  0.3f,
-    -0.3f,  0.3f, -0.3f,
+     0.5f,  0.5f,  0.5f,
+     0.5f,  0.5f, -0.5f,
+    -0.5f,  0.5f,  0.5f,
+    -0.5f,  0.5f, -0.5f,
 
     //BOTTOM FACE
-    -0.3f,  -0.3f,  0.3f,
-    -0.3f,  -0.3f, -0.3f,
-     0.3f,  -0.3f,  0.3f,
-     0.3f,  -0.3f, -0.3f,
+    -0.5f,  -0.5f,  0.5f,
+    -0.5f,  -0.5f, -0.5f,
+     0.5f,  -0.5f,  0.5f,
+     0.5f,  -0.5f, -0.5f,
 };
 
 static const std::vector<GLfloat> g_normal_buffer_data = {

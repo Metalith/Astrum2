@@ -6,11 +6,22 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -g -Wall")
 find_package(OpenGL REQUIRED)
 FIND_PACKAGE( Boost 1.63 COMPONENTS REQUIRED )
 
+find_library(NOISE_LIBRARY
+	NAMES libnoise.so
+	PATHS /usr/lib /usr/local/lib
+)
+
+find_path(NOISE_INCLUDE_DIR
+	NAMES libnoise/noise.h noise/noise.h
+	PATHS /usr/include /usr/local/include
+)
+
 # Compile external dependencies
 add_subdirectory (lib)
 
 include_directories(
 	${Boost_INCLUDE_DIR}
+	${NOISE_INCLUDE_DIR}
 	lib/glfw-3.2.1/include/GLFW/
 	lib/glm-0.9.8.4/glm/
 	lib/glew-2.1.0/include/
