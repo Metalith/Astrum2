@@ -2,7 +2,7 @@
 out vec4 color;
 
 in vec3 vertexNormal;
-in vec3 FragPos;  
+in vec3 FragPos;
 
 void main()
 {
@@ -15,7 +15,10 @@ void main()
     vec3 ambient = ambientStrength * lightColor;
   	
     // diffuse 
-    vec3 norm = normalize(vertexNormal);
+    vec3 X = dFdx(FragPos);
+    vec3 Y = dFdy(FragPos);
+    vec3 norm = normalize(cross(X,Y));
+    //vec3 norm = normalize(vertexNormal);
     vec3 lightDir = normalize(lightPos - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;

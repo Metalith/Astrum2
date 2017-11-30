@@ -4,6 +4,19 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "taskName": "Build and Run Linux",
+            "type": "shell",
+            "command": "make main && ./main",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceRoot}/bin"
+            },
+            "problemMatcher": []
+        },
+        {
             "taskName": "Build Linux",
             "type": "shell",
             "command": "make main",

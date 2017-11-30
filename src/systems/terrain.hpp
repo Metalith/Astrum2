@@ -4,6 +4,8 @@
 #include "system.hpp"
 #include "components/mesh.hpp"
 #include <glfw3.h>
+#include <glm/glm.hpp>
+using namespace glm;
 
 class TerrainSystem: public System {
 	public:
@@ -12,6 +14,7 @@ class TerrainSystem: public System {
 
 	private:
 		void GenerateCube(int x, int y, int z, Mesh * mesh);
+		bool sdf(glm::vec3 pos);
 };
 
 #endif
